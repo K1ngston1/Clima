@@ -9,11 +9,17 @@ class LoadingScreen extends StatefulWidget {
 }
 
 class _LoadingScreenState extends State<LoadingScreen> {
-  void getLocation() async {
+  @override
+  void initState() {
+    super.initState();
+    getLocation();
+  }
+
+  Future<Position?> getLocation() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       print("❌ Геолокація вимкнена! Ввімкніть GPS.");
-      return;
+      return null;
     }
 
     LocationPermission permission = await Geolocator.checkPermission();
@@ -22,14 +28,14 @@ class _LoadingScreenState extends State<LoadingScreen> {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
         print("❌ Дозвіл на геолокацію відхилено.");
-        return;
+        return null;
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
       print(
           "🚨 Дозвіл на геолокацію заблоковано назавжди! Перейдіть у налаштування.");
-      return;
+      return null;
     }
 
     Position position = await Geolocator.getCurrentPosition(
@@ -37,21 +43,11 @@ class _LoadingScreenState extends State<LoadingScreen> {
     );
 
     print("✅ Локація отримана: ${position.latitude}, ${position.longitude}");
+    return position;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            setState(() {
-              getLocation();
-            });
-          },
-          child: Text('Get Location'),
-        ),
-      ),
-    );
+    return Scaffold();
   }
 }
