@@ -38,12 +38,16 @@ class _LoadingScreenState extends State<LoadingScreen> {
       return null;
     }
 
-    Position position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
-    );
-
-    print("✅ Локація отримана: ${position.latitude}, ${position.longitude}");
-    return position;
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+      print("✅ Локація отримана: ${position.latitude}, ${position.longitude}");
+      return position;
+    } catch (e) {
+      print("❌ Помилка отримання локації: $e");
+      return null;
+    }
   }
 
   @override
